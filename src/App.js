@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+const WIDTH = 4;
+
 function Square({ value, onSquareClick }) {
 
   return (
@@ -12,38 +14,49 @@ function Square({ value, onSquareClick }) {
   );
 }
 
-export function Board({ xIsNext, squares, onPlay }) {
-  const winner = calculateWinner(squares);
+export function Board({ squares, onPlay }) {
+  const winner = isDone(squares);
   let status;
-  if (winner) {
-    status = "Winner: " + winner;
-  } else { 
-    status = "Next player: " + (xIsNext ? "X" : "O");
-  }
 
   function handleClick(i) {
-    if (squares[i] || calculateWinner(squares)) {
+    function getAdjacentEmpty(i) {
+      const row = Math.floor(i / WIDTH);
+      const col = i % WIDTH;
+      if (row > 0 && squares[i - WIDTH] === null) {
+        return i - WIDTH;
+      }
+      if (row < WIDTH - 1 && squares[i + WIDTH] === null) {
+        return i + WIDTH;
+      }
+      if (col > 0 && squares[i - 1] === null) {
+        return i - 1;
+      }
+      if (col < WIDTH - 1 && squares[i + 1] === null) {
+        return i + 1;
+      }
+      return null;
+    }
+
+    const adjacentEmpty = getAdjacentEmpty(i);
+    if (adjacentEmpty === null) {
       return;
     }
+
     const nextSquares = squares.slice();
-    if (xIsNext) {
-      nextSquares[i] = "X";
-    } else {
-      nextSquares[i] = "O";
-    }
+    swap(nextSquares, i, adjacentEmpty);
     onPlay(nextSquares);
   }
 
   return <>
     <div className="status">{status}</div>
     {
-      Array.from({length: 3}).map((_, row_index) => {
+      Array.from({length: WIDTH}).map((_, row_index) => {
         return (
           <div className="board-row">
-            {Array.from({length: 3}).map((_, col_index) => {
+            {Array.from({length: WIDTH}).map((_, col_index) => {
               return <Square
-                value={squares[row_index * 3 + col_index]}
-                onSquareClick={() => handleClick(row_index * 3 + col_index)}
+                value={squares[row_index * WIDTH + col_index]}
+                onSquareClick={() => handleClick(row_index * WIDTH + col_index)}
               />
             })}
           </div>
@@ -54,63 +67,48 @@ export function Board({ xIsNext, squares, onPlay }) {
 }
 
 export default function Game() {
-  const [history, setHistory] = useState([Array(9).fill(null)]);
-  const [currentMove, setCurrentMove] = useState(0);
-  const xIsNext = currentMove % 2 === 0;
-  const currentSquares = history[currentMove];
+
+  const [currentSquares, setCurrentSquares] = useState(
+    generateStartingSquares()
+  );
 
   function handlePlay(nextSquares) {
-    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares]
-    setHistory(nextHistory);
-    setCurrentMove(nextHistory.length - 1)
+    setCurrentSquares(nextSquares);
   }
-
-  function jumpTo(move) {
-    setCurrentMove(move);
-  }
-
-  const moves = history.map((squares, move) => {
-    let description;
-    if (move > 0) {
-      description = `Go to move #${move}`;
-    } else {
-      description = 'Go to game start';
-    }
-    return (
-      <li>
-        <button onClick={() => jumpTo(move)}>{description}</button>
-      </li>
-    );
-  });
 
   return (
     <div className="game">
       <div className="game-board">
-        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
-      </div>
-      <div className="game-info">
-        <ol>{moves}</ol>
+        <Board squares={currentSquares} onPlay={handlePlay} />
       </div>
     </div>
   );
 }
 
-function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6]
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
-  }
+function isDone(squares) {
   return null;
+}
+
+function generateStartingSquares() {
+  let squares = Array
+    .from({length: WIDTH * WIDTH})
+    .map((_, i) => i + 1);
+  squares[squares.length - 1] = null;
+
+  function getRandomUpToMaxExclusive(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+  for (let i = 0; i < squares.length - 1; i++) {
+    const swapIndex = getRandomUpToMaxExclusive(i, squares.length);
+    swap(squares, i, swapIndex);
+  }
+
+  return squares;
+}
+
+function swap(squares, i, j) {
+  const temp = squares[i];
+  squares[i] = squares[j];
+  squares[j] = temp;
+  return squares;
 }
