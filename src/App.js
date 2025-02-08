@@ -66,12 +66,22 @@ export function Board({ squares, onPlay }) {
 
 export default function Game() {
   const [currentSquares, setCurrentSquares] = useState(generateStartingSquares);
+  const [moves, setMoves] = useState(0);
 
   function handlePlay(nextSquares) {
+    setMoves(moves + 1);
     setCurrentSquares(nextSquares);
   }
 
-  const status = 'TODO';
+  const done = isDone(currentSquares);
+  let status = "Click a square near the empty one to move it";
+  if (moves > 0) {
+    status = 'Moves: ' + moves;
+    if (done) {
+      status = 'You won in ' + moves + ' moves!';
+    }
+  }
+
   return (
     <>
       <div className="status">{status}</div>
