@@ -15,8 +15,7 @@ function Square({ value, onSquareClick }) {
 }
 
 export function Board({ squares, onPlay }) {
-  const winner = isDone(squares);
-  let status;
+  // const winner = isDone(squares);
 
   function handleClick(i) {
     function getAdjacentEmpty(i) {
@@ -48,13 +47,12 @@ export function Board({ squares, onPlay }) {
   }
 
   return <>
-    <div className="status">{status}</div>
     {
       Array.from({length: WIDTH}).map((_, row_index) => {
         return (
-          <div className="board-row">
+          <div key={row_index + 100} className="board-row">
             {Array.from({length: WIDTH}).map((_, col_index) => {
-              return <Square
+              return <Square key={row_index * WIDTH + col_index}
                 value={squares[row_index * WIDTH + col_index]}
                 onSquareClick={() => handleClick(row_index * WIDTH + col_index)}
               />
@@ -67,30 +65,39 @@ export function Board({ squares, onPlay }) {
 }
 
 export default function Game() {
-
-  const [currentSquares, setCurrentSquares] = useState(
-    generateStartingSquares()
-  );
+  const [currentSquares, setCurrentSquares] = useState(generateStartingSquares);
 
   function handlePlay(nextSquares) {
     setCurrentSquares(nextSquares);
   }
 
+  const status = 'TODO';
   return (
-    <div className="game">
-      <div className="game-board">
-        <Board squares={currentSquares} onPlay={handlePlay} />
+    <>
+      <div className="status">{status}</div>
+      <div className="game">
+        <div className="game-board">
+          <Board squares={currentSquares} onPlay={handlePlay} />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
 function isDone(squares) {
-  return null;
+  if (squares[squares.length - 1] !== null) {
+    return false;
+  }
+  for (let i = 0; i < squares.length - 2; i++) {
+    if (squares[i] !== i + 1) {
+      return false;
+    }
+  }
+  return true;
 }
 
 function generateStartingSquares() {
-  let squares = Array
+  const squares = Array
     .from({length: WIDTH * WIDTH})
     .map((_, i) => i + 1);
   squares[squares.length - 1] = null;
@@ -98,11 +105,30 @@ function generateStartingSquares() {
   function getRandomUpToMaxExclusive(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
   }
-  for (let i = 0; i < squares.length - 1; i++) {
-    const swapIndex = getRandomUpToMaxExclusive(i, squares.length);
-    swap(squares, i, swapIndex);
-  }
 
+  let swaps = 0;
+  const lastPossibleIndexToSwap = squares.length - 1;
+  for (let i = 0; i < squares.length; i++) {
+    const swapIndex = getRandomUpToMaxExclusive(i, lastPossibleIndexToSwap);
+    if (i !== swapIndex) {
+      swap(squares, i, swapIndex);
+      swaps++;
+    }
+  }
+  /*
+  If you've made an even number of swaps you then have to move the 16 to a even position
+    (i.e. 2 away or a multiple of 2 away)
+  Otherwise you have to move it to an odd position
+  */
+  const currentlySolvable = swaps % 2 === 0;
+  if (!currentlySolvable) {
+    swap(squares, 0, 1);
+  }
+  // TODO Make it so that the last one could be in any position
+
+  if (isDone(squares)) {
+    return generateStartingSquares();
+  }
   return squares;
 }
 
