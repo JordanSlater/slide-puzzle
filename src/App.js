@@ -77,7 +77,7 @@ export function Board({ squares, onPlay }) {
   </>;
 }
 
-export function ContextualInputListener({ squares, onPlay }) {
+export function GameAwareInputListener({ squares, onPlay }) {
   function onDirectionPressed(direction) {
     const emptyIndex = squares.indexOf(null);
     const swapPair = getSwapPairsInDirection(emptyIndex, direction);
@@ -113,7 +113,7 @@ export default function Game() {
     <>
       <div className="centered-container">
         <div className="game">
-          <ContextualInputListener squares={currentSquares} onPlay={handlePlay} />
+          <GameAwareInputListener squares={currentSquares} onPlay={handlePlay} />
           <div className="game-board">
             <Board squares={currentSquares} onPlay={handlePlay} />
           </div>
