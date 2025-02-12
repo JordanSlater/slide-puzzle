@@ -47,11 +47,6 @@ ul {
 body {
   font-family: sans-serif;
   margin: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
 }
 
 .square {
@@ -90,4 +85,12 @@ body {
 
 .game-info {
   margin-left: 20px;
+}
+
+.centered-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }

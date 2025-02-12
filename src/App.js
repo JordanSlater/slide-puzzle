@@ -101,7 +101,7 @@ export default function Game() {
   }
 
   const done = isDone(currentSquares);
-  let status = "Click a square near the empty one to move it";
+  let status = "Click a square near the empty one to move it, or use the arrow keys.";
   if (moves > 0) {
     status = 'Moves: ' + moves;
     if (done) {
@@ -111,13 +111,15 @@ export default function Game() {
 
   return (
     <>
-      <ContextualInputListener squares={currentSquares} onPlay={handlePlay} />
-      <div className="game">
-        <div className="game-board">
-          <Board squares={currentSquares} onPlay={handlePlay} />
+      <div className="centered-container">
+        <div className="game">
+          <ContextualInputListener squares={currentSquares} onPlay={handlePlay} />
+          <div className="game-board">
+            <Board squares={currentSquares} onPlay={handlePlay} />
+          </div>
         </div>
+        <div className="status">{status}</div>
       </div>
-      <div className="status">{status}</div>
     </>
   );
 }
