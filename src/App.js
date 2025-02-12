@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import InputListener from './InputListener';
+import { CodeGen } from 'ajv';
 
 const WIDTH = 4;
 
@@ -14,36 +16,47 @@ function Square({ value, onSquareClick }) {
   );
 }
 
+function getAdjacentEmpty(squares, i) {
+  const row = Math.floor(i / WIDTH);
+  const col = i % WIDTH;
+  if (row > 0 && squares[i - WIDTH] === null) {
+    return i - WIDTH;
+  }
+  if (row < WIDTH - 1 && squares[i + WIDTH] === null) {
+    return i + WIDTH;
+  }
+  if (col > 0 && squares[i - 1] === null) {
+    return i - 1;
+  }
+  if (col < WIDTH - 1 && squares[i + 1] === null) {
+    return i + 1;
+  }
+  return null;
+}
+
+function getSwapPairsInDirection(emptyIndex, directionToSwapIn) {
+  const colOffset = [1, 0, -1, 0][directionToSwapIn];
+  const rowOffset = [0, -1, 0, 1][directionToSwapIn];
+  const otherSwapIndex = emptyIndex + rowOffset * WIDTH + colOffset;
+  if ((colOffset === -1 && emptyIndex % WIDTH === 0)
+    || (colOffset === 1 && emptyIndex % WIDTH === WIDTH - 1)
+    || (rowOffset === -1 && otherSwapIndex < 0)
+    || (rowOffset === 1 && otherSwapIndex >= WIDTH * WIDTH)) {
+    return null;
+  }
+  if (rowOffset !== 0 && (otherSwapIndex < 0 || otherSwapIndex >= WIDTH * WIDTH)) {
+    return null;
+  }
+  return [emptyIndex, otherSwapIndex];
+}
+
 export function Board({ squares, onPlay }) {
-  // const winner = isDone(squares);
-
   function handleClick(i) {
-    function getAdjacentEmpty(i) {
-      const row = Math.floor(i / WIDTH);
-      const col = i % WIDTH;
-      if (row > 0 && squares[i - WIDTH] === null) {
-        return i - WIDTH;
-      }
-      if (row < WIDTH - 1 && squares[i + WIDTH] === null) {
-        return i + WIDTH;
-      }
-      if (col > 0 && squares[i - 1] === null) {
-        return i - 1;
-      }
-      if (col < WIDTH - 1 && squares[i + 1] === null) {
-        return i + 1;
-      }
-      return null;
-    }
-
-    const adjacentEmpty = getAdjacentEmpty(i);
+    const adjacentEmpty = getAdjacentEmpty(squares, i);
     if (adjacentEmpty === null) {
       return;
     }
-
-    const nextSquares = squares.slice();
-    swap(nextSquares, i, adjacentEmpty);
-    onPlay(nextSquares);
+    onPlay([i, adjacentEmpty]);
   }
 
   return <>
@@ -64,11 +77,25 @@ export function Board({ squares, onPlay }) {
   </>;
 }
 
+export function ContextualInputListener({ squares, onPlay }) {
+  function onDirectionPressed(direction) {
+    const emptyIndex = squares.indexOf(null);
+    const swapPair = getSwapPairsInDirection(emptyIndex, direction);
+    onPlay(swapPair);
+  }
+  return <InputListener onDirectionPressed={onDirectionPressed} dependencies={[squares]} />;
+}
+
 export default function Game() {
   const [currentSquares, setCurrentSquares] = useState(generateStartingSquares);
   const [moves, setMoves] = useState(0);
 
-  function handlePlay(nextSquares) {
+  function handlePlay(swapPair) {
+    if (swapPair === null || isDone(currentSquares)) {
+      return;
+    }
+    const nextSquares = currentSquares.slice();
+    swap(nextSquares, swapPair[0], swapPair[1]);
     setMoves(moves + 1);
     setCurrentSquares(nextSquares);
   }
@@ -84,12 +111,13 @@ export default function Game() {
 
   return (
     <>
-      <div className="status">{status}</div>
+      <ContextualInputListener squares={currentSquares} onPlay={handlePlay} />
       <div className="game">
         <div className="game-board">
           <Board squares={currentSquares} onPlay={handlePlay} />
         </div>
       </div>
+      <div className="status">{status}</div>
     </>
   );
 }
@@ -144,6 +172,10 @@ function generateStartingSquares() {
 
 function swap(squares, i, j) {
   const temp = squares[i];
+  if (i < 0 || i >= squares.length || j < 0 || j >= squares.length) {
+    console.error('Invalid swap', i, j);
+    return squares;
+  }
   squares[i] = squares[j];
   squares[j] = temp;
   return squares;
