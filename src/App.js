@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import InputListener from './InputListener';
+import Timer from './Timer';
 import { CodeGen } from 'ajv';
 
 const WIDTH = 4;
@@ -89,6 +90,7 @@ export function GameAwareInputListener({ squares, onPlay }) {
 export default function Game() {
   const [currentSquares, setCurrentSquares] = useState(generateStartingSquares);
   const [moves, setMoves] = useState(0);
+  const [startTime, setStartTime] = useState(null);
 
   function handlePlay(swapPair) {
     if (swapPair === null || isDone(currentSquares)) {
@@ -96,6 +98,9 @@ export default function Game() {
     }
     const nextSquares = currentSquares.slice();
     swap(nextSquares, swapPair[0], swapPair[1]);
+    if (moves === 0) {
+      setStartTime(Date.now());
+    }
     setMoves(moves + 1);
     setCurrentSquares(nextSquares);
   }
@@ -112,6 +117,7 @@ export default function Game() {
   return (
     <>
       <div className="centered-container">
+        <Timer startTime={startTime}/>
         <div className="game">
           <GameAwareInputListener squares={currentSquares} onPlay={handlePlay} />
           <div className="game-board">
