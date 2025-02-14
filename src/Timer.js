@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 
 export default function Timer( {startTime} ) {
-  const [millisecondsSinceStart, setmillisecondsSinceStart] = useState(Date.now);
+  const [millisecondsSinceStart, setmillisecondsSinceStart] = useState(null);
   const isRunning = startTime !== null;
   useEffect(() => {
     let intervalId;
@@ -21,7 +21,7 @@ export default function Timer( {startTime} ) {
   const seconds = Math.floor((millisecondsSinceStart % 6e4) / 1000);
   const milliseconds = Math.floor(millisecondsSinceStart % 1000);
 
-  const timeAsString = isRunning ?
+  const timeAsString = millisecondsSinceStart !== null ?
       ((hours > 0 ? `${hours.toString().padStart(2, "0")}:` : "") +
         `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}.${milliseconds.toString().padStart(3, "0")}`
       )

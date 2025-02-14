@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import InputListener from './InputListener';
 import Timer from './Timer';
-import { CodeGen } from 'ajv';
 
 const WIDTH = 4;
 
@@ -103,6 +102,9 @@ export default function Game() {
     }
     setMoves(moves + 1);
     setCurrentSquares(nextSquares);
+    if (isDone(nextSquares)) {
+      setStartTime(null);
+    }
   }
 
   const done = isDone(currentSquares);
