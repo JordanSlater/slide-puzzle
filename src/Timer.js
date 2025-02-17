@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { UI_UPDATE_PERIOD_MS } from "./Constants";
 
 export default function Timer( {startTime} ) {
   const [millisecondsSinceStart, setmillisecondsSinceStart] = useState(null);
@@ -7,10 +7,9 @@ export default function Timer( {startTime} ) {
   useEffect(() => {
     let intervalId;
     if (isRunning) {
-      const RepeatPeriodInMilliseconds = 1;
       intervalId = setInterval(
         () => setmillisecondsSinceStart(Date.now() - startTime),
-        RepeatPeriodInMilliseconds);
+        UI_UPDATE_PERIOD_MS);
     }
     return () => clearInterval(intervalId);
   }, [isRunning, millisecondsSinceStart]);

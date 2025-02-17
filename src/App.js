@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import InputListener from './InputListener';
 import Timer from './Timer';
-
-const WIDTH = 4;
+import { WIDTH } from './Constants';
+import Splits from './Splits';
 
 function Square({ value, onSquareClick }) {
 
@@ -63,7 +63,7 @@ export function Board({ squares, onPlay }) {
     {
       Array.from({length: WIDTH}).map((_, row_index) => {
         return (
-          <div key={row_index + 100} className="board-row">
+          <div key={row_index} className="board-row">
             {Array.from({length: WIDTH}).map((_, col_index) => {
               return <Square key={row_index * WIDTH + col_index}
                 value={squares[row_index * WIDTH + col_index]}
@@ -119,12 +119,13 @@ export default function Game() {
   return (
     <>
       <div className="game">
-        <Timer startTime={startTime}/>
         <GameAwareInputListener squares={currentSquares} onPlay={handlePlay} />
           <div className="game-board">
             <Board squares={currentSquares} onPlay={handlePlay} />
           </div>
         <div className="status">{status}</div>
+        <Timer startTime={startTime}/>
+        <Splits squares={currentSquares}/>
       </div>
     </>
   );
