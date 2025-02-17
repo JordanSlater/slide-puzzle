@@ -61,13 +61,12 @@ body {
   margin-top: -1px;
   padding: 0;
   text-align: center;
-  width: 34px;
+  min-width: 34px;
 }
 
-.board-row:after {
-  clear: both;
-  content: '';
-  display: table;
+.board-row {
+  display: flex;
+  flex-direction: row;
 }
 
 .status {
@@ -76,23 +75,13 @@ body {
   margin-top: 10px;
 }
 
+.game-board {
+  max-width: fit-content;
+  margin-inline: auto;
+}
+
 .game {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
 
-.game-info {
-  margin-left: 20px;
-}
-
-.centered-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
 }
 
 #timer {

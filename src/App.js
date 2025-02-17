@@ -118,14 +118,12 @@ export default function Game() {
 
   return (
     <>
-      <div className="centered-container">
+      <div className="game">
         <Timer startTime={startTime}/>
-        <div className="game">
-          <GameAwareInputListener squares={currentSquares} onPlay={handlePlay} />
+        <GameAwareInputListener squares={currentSquares} onPlay={handlePlay} />
           <div className="game-board">
             <Board squares={currentSquares} onPlay={handlePlay} />
           </div>
-        </div>
         <div className="status">{status}</div>
       </div>
     </>
@@ -136,7 +134,8 @@ function isDone(squares) {
   if (squares[squares.length - 1] !== null) {
     return false;
   }
-  for (let i = 0; i < squares.length - 2; i++) {
+  const lastNonEmptyIndex = squares.length - 2;
+  for (let i = 0; i <= lastNonEmptyIndex; i++) {
     if (squares[i] !== i + 1) {
       return false;
     }
@@ -181,11 +180,11 @@ function generateStartingSquares() {
 }
 
 function swap(squares, i, j) {
-  const temp = squares[i];
   if (i < 0 || i >= squares.length || j < 0 || j >= squares.length) {
-    console.error('Invalid swap', i, j);
+    console.error('Invalid swap indicies', i, j);
     return squares;
   }
+  const temp = squares[i];
   squares[i] = squares[j];
   squares[j] = temp;
   return squares;
