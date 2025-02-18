@@ -1,27 +1,31 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { WIDTH } from "./Constants";
+import Timer from './Timer';
 
-export default function Splits({ squares }) {
+export default function Splits({ startTime, squares }) {
   const complete = numComplete(squares);
   const [splits, setSplits] = useState(Array(WIDTH * WIDTH - 1).fill(null));
-  return <table className="splits">
-    <thead>
-      <tr>
-        <th>Tile</th>
-        <th>Diff</th>
-        <th>Time</th>
-      </tr>
-    </thead>
-    <tbody>
-      {splits.map((_, index) => {
-        return <tr key={index}>
-          <td>{index + 1}</td>
-          <td>{splits[index]}</td>
-          <td>{splits[index]}</td>
+  return <div className="splits">
+    <Timer startTime={startTime}/>
+    <table>
+      <thead>
+        <tr>
+          <th>Tile</th>
+          <th>Diff</th>
+          <th>Time</th>
         </tr>
-      })}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {splits.map((_, index) => {
+          return <tr key={index}>
+            <td>{index + 1}</td>
+            <td id="unit-time">{0}</td>
+            <td id="unit-time">{splits[index]}</td>
+          </tr>
+        })}
+      </tbody>
+    </table>
+  </div>
 }
 
 // TODO consider combining with isDone function

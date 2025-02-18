@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import InputListener from './InputListener';
-import Timer from './Timer';
 import { WIDTH } from './Constants';
 import Splits from './Splits';
 
@@ -124,8 +123,7 @@ export default function Game() {
             <Board squares={currentSquares} onPlay={handlePlay} />
           </div>
         <div className="status">{status}</div>
-        <Timer startTime={startTime}/>
-        <Splits squares={currentSquares}/>
+        <Splits startTime={startTime} squares={currentSquares}/>
       </div>
     </>
   );

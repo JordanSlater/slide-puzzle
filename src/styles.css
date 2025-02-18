@@ -47,6 +47,7 @@ ul {
 body {
   font-family: sans-serif;
   margin: 0;
+  margin-top: 20px;
 }
 
 .square {
@@ -80,14 +81,14 @@ body {
   margin-inline: auto;
 }
 
-.game {
-
+.splits {
+  max-width: fit-content;
+  margin-inline: auto;
 }
 
-#timer {
+.timer {
   text-align: center;
-  margin: auto;
-  font-size: 16px;
+  font-size: 25px;
   padding: 10px;
 }
 
@@ -99,7 +100,7 @@ tbody > tr:nth-of-type(even) {
 }
 
 /* TODO apply this to number places. */
-tbody > tr > td:last-of-type {
+#unit-time {
   text-align: right;
 }
 
