@@ -2,25 +2,31 @@ import { useState, useEffect } from "react";
 import { WIDTH } from "./Constants";
 import Timer from './Timer';
 
-export default function Splits({ startTime, squares }) {
-  // first slot is start time
+export default function Splits({ startTime, stopTime, isRunning, squares }) {
+  // first slot is start time such that the difference is always calculable
   const [splits, setSplits] = useState(Array(WIDTH * WIDTH).fill(null));
   const [prevSplitIndex, setPrevSplitIndex] = useState(0);
-  const [prevStartTime, setPrevStartTime] = useState(null);
+  const [prevIsRunning, setPrevIsRunning] = useState(false);
 
   useEffect(() => {
     const currentSplitIndex = numComplete(squares);
-    const stopping = startTime === null && prevStartTime !== null;
-    const stopped = startTime === null && prevStartTime === null;
-    if (stopped || currentSplitIndex === prevSplitIndex) {
+    const starting = isRunning && !prevIsRunning;
+    const stopping = !isRunning && prevIsRunning;
+    const shouldUpdateSplits = (isRunning && currentSplitIndex !== prevSplitIndex) || starting || stopping;
+    if (!shouldUpdateSplits) {
       return;
     }
     setSplits((prevSplits) => {
       let newSplits = prevSplits.slice();
       if (currentSplitIndex > prevSplitIndex) {
         // made progress
-        const avoidStartTime = startTime === prevStartTime || stopping;
-        const splitTime = avoidStartTime ? Date.now() : startTime;
+        let splitTime = Date.now();
+        if (starting) {
+          splitTime = startTime;
+        }
+        if (stopping) {
+          splitTime = stopTime;
+        }
         for (let i = prevSplitIndex + 1; i <= currentSplitIndex; i++) {
           newSplits[i] = splitTime;
         }
@@ -30,17 +36,17 @@ export default function Splits({ startTime, squares }) {
           newSplits[i] = null;
         }
       }
-      if (!stopping) {
+      if (starting) {
         newSplits[0] = startTime;
       }
       setPrevSplitIndex(currentSplitIndex);
-      setPrevStartTime(startTime);
+      setPrevIsRunning(isRunning);
       return newSplits;
     })
-  }, [squares, startTime]);
+  }, [squares, startTime, stopTime, isRunning]);
 
   return <div className="splits">
-    <Timer startTime={startTime}/>
+    <Timer startTime={startTime} stopTime={stopTime} isRunning={isRunning} />
     <table>
       <thead>
         <tr>
@@ -57,12 +63,12 @@ export default function Splits({ startTime, squares }) {
           let timeDiffAsString = null;
           if (splits[index] !== null) {
             const timeDiff = (splits[index] - splits[index - 1]);
-            const milliseconds = Math.floor(timeDiff % 1000);
+            const centiseconds = Math.floor(timeDiff / 10);
             const allSeconds = timeDiff / 1000;
             const seconds = Math.floor(allSeconds % 60);
             const allMinutes = Math.floor(allSeconds / 60);
             // TODO deal with a player taking too long.
-            timeDiffAsString = `${allMinutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}:${milliseconds.toString().padStart(3, "0")}`
+            timeDiffAsString = `${allMinutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}:${centiseconds.toString().padStart(2, "0")}`
           }
 
           return <tr key={index}>

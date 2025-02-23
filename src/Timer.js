@@ -1,22 +1,31 @@
 import { useEffect, useState } from "react";
 import { UI_UPDATE_PERIOD_MS } from "./Constants";
 
-export default function Timer( {startTime} ) {
+export default function Timer( {startTime, stopTime, isRunning} ) {
   const [millisecondsSinceStart, setmillisecondsSinceStart] = useState(null);
-  const isRunning = startTime !== null;
   useEffect(() => {
     let intervalId;
     if (isRunning) {
       intervalId = setInterval(
-        () => setmillisecondsSinceStart(Date.now() - startTime),
+        () => {
+          if (stopTime === null) {
+            const time = Date.now() - startTime;
+            setmillisecondsSinceStart(time);
+            console.log("time", time);
+          }
+        },
         UI_UPDATE_PERIOD_MS);
     }
     return () => clearInterval(intervalId);
   }, [isRunning]);
 
+  useEffect(() => {
+    setmillisecondsSinceStart(stopTime - startTime);
+  }, [stopTime]);
+
   const minutes = Math.floor((millisecondsSinceStart % 3.6e6) / 6e4);
   const seconds = Math.floor((millisecondsSinceStart % 6e4) / 1000);
-  const centiseconds = Math.floor(millisecondsSinceStart % 100);
+  const centiseconds = Math.floor(millisecondsSinceStart / 10);
 
   const timeAsString =
     millisecondsSinceStart !== null ?

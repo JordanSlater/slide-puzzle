@@ -88,7 +88,19 @@ export function GameAwareInputListener({ squares, onPlay }) {
 export default function Game() {
   const [currentSquares, setCurrentSquares] = useState(generateStartingSquares);
   const [moves, setMoves] = useState(0);
+  // The following would benefit from a class structure
   const [startTime, setStartTime] = useState(null);
+  const [stopTime, setStopTime] = useState(null);
+  const isRunning = startTime !== null && stopTime === null;
+
+  function start() {
+    setStartTime(Date.now());
+    setStopTime(null);
+  }
+
+  function stop() {
+    setStopTime(Date.now());
+  }
 
   function handlePlay(swapPair) {
     if (swapPair === null || isDone(currentSquares)) {
@@ -100,13 +112,13 @@ export default function Game() {
       const nextSquares = prevSquares.slice();
       swap(nextSquares, swapPair[0], swapPair[1]);
       if (isDone(nextSquares)) {
-        setStartTime(null);
+        stop();
       }
       return nextSquares;
     });
     setMoves((prevMoves) => {
       if (prevMoves === 0) {
-        setStartTime(Date.now());
+        start();
       }
       return prevMoves + 1;
     });
@@ -129,7 +141,7 @@ export default function Game() {
             <Board squares={currentSquares} onPlay={handlePlay} />
           </div>
         <div className="status">{status}</div>
-        <Splits startTime={startTime} squares={currentSquares}/>
+        <Splits startTime={startTime} stopTime={stopTime} isRunning={isRunning} squares={currentSquares}/>
       </div>
     </>
   );
