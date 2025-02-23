@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { WIDTH } from "./Constants";
 import Timer from './Timer';
+import { displayMillisecondsInMinutesToCentiseconds } from "./Display";
 
 export default function Splits({ startTime, stopTime, isRunning, squares }) {
   // first slot is start time such that the difference to the previous is always calculable
@@ -62,13 +63,8 @@ export default function Splits({ startTime, stopTime, isRunning, squares }) {
           }
           let timeDiffAsString = null;
           if (splits[index] !== null) {
-            const timeDiff = (splits[index] - splits[index - 1]);
-            const centiseconds = Math.floor(timeDiff / 10);
-            const allSeconds = timeDiff / 1000;
-            const seconds = Math.floor(allSeconds % 60);
-            const allMinutes = Math.floor(allSeconds / 60);
-            // TODO deal with a player taking too long.
-            timeDiffAsString = `${allMinutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}:${centiseconds.toString().padStart(2, "0")}`
+            const timeDiffInMilliseconds = (splits[index] - splits[index - 1]);
+            timeDiffAsString = displayMillisecondsInMinutesToCentiseconds(timeDiffInMilliseconds);
           }
 
           return <tr key={index}>
