@@ -12,7 +12,7 @@ export default function Timer( {startTime} ) {
         UI_UPDATE_PERIOD_MS);
     }
     return () => clearInterval(intervalId);
-  }, [isRunning, millisecondsSinceStart]);
+  }, [isRunning]);
 
   const minutes = Math.floor((millisecondsSinceStart % 3.6e6) / 6e4);
   const seconds = Math.floor((millisecondsSinceStart % 6e4) / 1000);
