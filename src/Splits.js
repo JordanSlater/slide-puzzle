@@ -3,7 +3,7 @@ import { WIDTH } from "./Constants";
 import Timer from './Timer';
 
 export default function Splits({ startTime, stopTime, isRunning, squares }) {
-  // first slot is start time such that the difference is always calculable
+  // first slot is start time such that the difference to the previous is always calculable
   const [splits, setSplits] = useState(Array(WIDTH * WIDTH).fill(null));
   const [prevSplitIndex, setPrevSplitIndex] = useState(0);
   const [prevIsRunning, setPrevIsRunning] = useState(false);
