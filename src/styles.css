@@ -114,4 +114,5 @@ tbody > tr > td, thead > tr > th {
   margin-top: -1px;
   border: 0px solid #999;
   padding: 3px;
+  padding-inline: 10px;
 }
