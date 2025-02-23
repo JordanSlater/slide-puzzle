@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "react": "19.0.0-rc-3edc000d-20240926",
+    "react-cookie": "^7.2.2",
     "react-dom": "19.0.0-rc-3edc000d-20240926",
     "react-scripts": "^5.0.0"
   },
