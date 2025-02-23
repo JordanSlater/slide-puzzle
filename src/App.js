@@ -94,16 +94,22 @@ export default function Game() {
     if (swapPair === null || isDone(currentSquares)) {
       return;
     }
-    const nextSquares = currentSquares.slice();
-    swap(nextSquares, swapPair[0], swapPair[1]);
-    if (moves === 0) {
-      setStartTime(Date.now());
-    }
-    setMoves(moves + 1);
-    setCurrentSquares(nextSquares);
-    if (isDone(nextSquares)) {
-      setStartTime(null);
-    }
+
+    // Copilot recommended I use a function to update the currentSquares state here. I could not find a functional difference.
+    setCurrentSquares((prevSquares) => {
+      const nextSquares = prevSquares.slice();
+      swap(nextSquares, swapPair[0], swapPair[1]);
+      if (isDone(nextSquares)) {
+        setStartTime(null);
+      }
+      return nextSquares;
+    });
+    setMoves((prevMoves) => {
+      if (prevMoves === 0) {
+        setStartTime(Date.now());
+      }
+      return prevMoves + 1;
+    });
   }
 
   const done = isDone(currentSquares);
