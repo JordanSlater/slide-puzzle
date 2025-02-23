@@ -9,9 +9,7 @@ export default function Timer( {startTime, stopTime, isRunning} ) {
       intervalId = setInterval(
         () => {
           if (stopTime === null) {
-            const time = Date.now() - startTime;
-            setmillisecondsSinceStart(time);
-            console.log("time", time);
+            setmillisecondsSinceStart(Date.now() - startTime);
           }
         },
         UI_UPDATE_PERIOD_MS);
