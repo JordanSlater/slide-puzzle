@@ -19,7 +19,8 @@ export default function Splits({ startTime, squares }) {
       let newSplits = prevSplits.slice();
       if (currentSplitIndex > prevSplitIndex) {
         // made progress
-        const splitTime = startTime === prevStartTime ? Date.now() : startTime;
+        const avoidStartTime = startTime === prevStartTime || stopping;
+        const splitTime = avoidStartTime ? Date.now() : startTime;
         for (let i = prevSplitIndex + 1; i <= currentSplitIndex; i++) {
           newSplits[i] = splitTime;
         }
@@ -53,11 +54,21 @@ export default function Splits({ startTime, squares }) {
           if (index === 0) {
             return null;
           }
-          const timeAsString = splits[index] === null ? "" : (splits[index] - splits[index - 1]);
+          let timeDiffAsString = null;
+          if (splits[index] !== null) {
+            const timeDiff = (splits[index] - splits[index - 1]);
+            const milliseconds = Math.floor(timeDiff % 1000);
+            const allSeconds = timeDiff / 1000;
+            const seconds = Math.floor(allSeconds % 60);
+            const allMinutes = Math.floor(allSeconds / 60);
+            // TODO deal with a player taking too long.
+            timeDiffAsString = `${allMinutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}:${milliseconds.toString().padStart(3, "0")}`
+          }
+
           return <tr key={index}>
             <td>{index}</td>
             <td id="unit-time">{0}</td>
-            <td id="unit-time">{timeAsString}</td>
+            <td id="unit-time">{timeDiffAsString}</td>
           </tr>
         })}
       </tbody>
