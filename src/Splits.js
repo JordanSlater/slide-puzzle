@@ -21,13 +21,7 @@ export default function Splits({ startTime, stopTime, isRunning, squares }) {
       let newSplits = prevSplits.slice();
       if (currentSplitIndex > prevSplitIndex) {
         // made progress
-        let splitTime = Date.now();
-        if (starting) {
-          splitTime = startTime;
-        }
-        if (stopping) {
-          splitTime = stopTime;
-        }
+        let splitTime = getSplitTime();
         for (let i = prevSplitIndex + 1; i <= currentSplitIndex; i++) {
           newSplits[i] = splitTime;
         }
@@ -43,6 +37,16 @@ export default function Splits({ startTime, stopTime, isRunning, squares }) {
       setPrevSplitIndex(currentSplitIndex);
       setPrevIsRunning(isRunning);
       return newSplits;
+
+      function getSplitTime() {
+        if (starting) {
+          return startTime;
+        }
+        if (stopping) {
+          return stopTime;
+        }
+        return Date.now();
+      }
     })
   }, [squares, startTime, stopTime, isRunning]);
 
