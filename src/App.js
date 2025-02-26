@@ -117,8 +117,8 @@ export default function Game() {
   }
 
   function reset() {
-    setStopTime(null);
     setStartTime(null);
+    setStopTime(null);
     setCurrentSquares(generateStartingSquares());
     setMoves(0);
   }

@@ -19,8 +19,12 @@ export default function Timer( {startTime, stopTime, isRunning} ) {
   }, [isRunning]);
 
   useEffect(() => {
-    setmillisecondsSinceStart(stopTime - startTime);
-  }, [stopTime]);
+    let time = 0;
+    if (startTime !== null && stopTime !== null) {
+      time = stopTime - startTime;
+    }
+    setmillisecondsSinceStart(time);
+  }, [startTime, stopTime]);
 
   const timeAsString = displayMillisecondsInMinutesToCentiseconds(millisecondsSinceStart ?? 0);
 
