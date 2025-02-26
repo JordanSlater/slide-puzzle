@@ -12,5 +12,5 @@ export function displayMillisecondsInMinutesToCentiseconds(timeInMilliseconds) {
   if (allMinutes >= 60) {
     return "60:++:++";
   }
-  return `${sign}${allMinutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}:${centiseconds.toString().padStart(2, "0")}`
+  return `${sign}${allMinutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}.${centiseconds.toString().padStart(2, "0")}`
 }
