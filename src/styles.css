@@ -111,6 +111,7 @@ tbody > tr:nth-of-type(even) {
 /* TODO apply this to number places. */
 #unit-time {
   text-align: right;
+  min-inline-size: 100px;
 }
 
 table {
