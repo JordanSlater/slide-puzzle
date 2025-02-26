@@ -3,7 +3,8 @@ import { WIDTH } from "./Constants";
 import Timer from './Timer';
 import { displayMillisecondsInMinutesToCentiseconds } from "./Display";
 
-export default function Splits({ startTime, stopTime, isRunning, squares }) {
+// TODO there are way too many params here
+export default function Splits({ startTime, stopTime, isRunning, squares, bestSplits, recordNewSplits }) {
   // first slot is start time such that the difference to the previous is always calculable
   const [splits, setSplits] = useState(Array(WIDTH * WIDTH).fill(null));
   const [prevSplitIndex, setPrevSplitIndex] = useState(0);
@@ -36,6 +37,10 @@ export default function Splits({ startTime, stopTime, isRunning, squares }) {
       }
       setPrevSplitIndex(currentSplitIndex);
       setPrevIsRunning(isRunning);
+      if (stopping) {
+        recordNewSplits(newSplits);
+      }
+
       return newSplits;
 
       function getSplitTime() {
@@ -66,14 +71,21 @@ export default function Splits({ startTime, stopTime, isRunning, squares }) {
             return null;
           }
           let timeDiffAsString = null;
+          let bestDiffAsString = null;
           if (splits[index] !== null) {
             const timeDiffInMilliseconds = (splits[index] - splits[index - 1]);
             timeDiffAsString = displayMillisecondsInMinutesToCentiseconds(timeDiffInMilliseconds);
+            if (bestSplits !== null && typeof bestSplits !== 'undefined') {
+              console.log(bestSplits);
+              const timeDiffFromBestInMilliseconds = bestSplits[index] - bestSplits[index - 1];
+              const bestDiff = timeDiffInMilliseconds - timeDiffFromBestInMilliseconds;
+              bestDiffAsString = displayMillisecondsInMinutesToCentiseconds(bestDiff);
+            }
           }
 
           return <tr key={index}>
             <td>{index}</td>
-            <td id="unit-time">{0}</td>
+            <td id="unit-time">{bestDiffAsString}</td>
             <td id="unit-time">{timeDiffAsString}</td>
           </tr>
         })}

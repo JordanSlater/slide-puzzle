@@ -1,4 +1,9 @@
 export function displayMillisecondsInMinutesToCentiseconds(timeInMilliseconds) {
+  let sign = "";
+  if (timeInMilliseconds < 0) {
+    timeInMilliseconds = -timeInMilliseconds;
+    sign = "-";
+  }
   const allCentiseconds = timeInMilliseconds / 10;
   const centiseconds = Math.floor(allCentiseconds % 100);
   const allSeconds = Math.floor(allCentiseconds / 100);
@@ -7,6 +12,5 @@ export function displayMillisecondsInMinutesToCentiseconds(timeInMilliseconds) {
   if (allMinutes >= 60) {
     return "60:++:++";
   }
-  // TODO deal with a player taking too long.
-  return `${allMinutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}:${centiseconds.toString().padStart(2, "0")}`
+  return `${sign}${allMinutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}:${centiseconds.toString().padStart(2, "0")}`
 }

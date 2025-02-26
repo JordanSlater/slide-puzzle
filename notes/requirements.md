@@ -10,6 +10,12 @@ First I want to create the board through for loops
     - [x] stop time correctly
     - [x] confirm that segments sum to final timer time
     - [ ] Store best time and compare
+        - [x] store a cookie
+        - [x] store the splits
+        - [x] compare with best splits
+        - [ ] Add colour
+    - [ ] add reset button
+    - [ ] improve splits display
 - [ ] add replay feature....?
     - [ ] record every board state
 - [ ]

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import InputListener from './InputListener';
 import { WIDTH } from './Constants';
 import Splits from './Splits';
+import { useCookies } from "react-cookie";
 
 function Square({ value, onSquareClick }) {
 
@@ -92,6 +93,20 @@ export default function Game() {
   const [startTime, setStartTime] = useState(null);
   const [stopTime, setStopTime] = useState(null);
   const isRunning = startTime !== null && stopTime === null;
+  const [cookies, setCookie] = useCookies(['bestSplits']);
+
+  function recordNewSplits(newSplits) {
+    const time = newSplits[newSplits.length - 1] - newSplits[0];
+    if (typeof cookies.bestSplits === 'undefined') {
+      setCookie('bestSplits', newSplits);
+      return;
+    }
+    const bestTime = cookies.bestSplits[cookies.bestSplits.length - 1] - cookies.bestSplits[0];
+    if (time < bestTime) {
+      console.log("set best splits in cookies");
+      setCookie('bestSplits', newSplits);
+    }
+  }
 
   function start() {
     setStartTime(Date.now());
@@ -141,7 +156,14 @@ export default function Game() {
             <Board squares={currentSquares} onPlay={handlePlay} />
           </div>
         <div className="status">{status}</div>
-        <Splits startTime={startTime} stopTime={stopTime} isRunning={isRunning} squares={currentSquares}/>
+        <Splits
+          startTime={startTime}
+          stopTime={stopTime}
+          isRunning={isRunning}
+          squares={currentSquares}
+          bestSplits={cookies.bestSplits}
+          recordNewSplits={recordNewSplits}
+        />
       </div>
     </>
   );
