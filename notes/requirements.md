@@ -18,4 +18,5 @@ First I want to create the board through for loops
     - [ ] improve splits display
 - [ ] add replay feature....?
     - [ ] record every board state
-- [ ]
+- [ ] Prevent scrolling when the window is too small and you press the arrow keys
+- [x] change times to cumulative (time[i] - time[0]) instead of segment time. 

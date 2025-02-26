@@ -70,14 +70,15 @@ export default function Splits({ startTime, stopTime, isRunning, squares, bestSp
           if (index === 0) {
             return null;
           }
-          let timeDiffAsString = null;
+          let timeCumulativeAsString = null;
           let bestDiffAsString = null;
           if (splits[index] !== null) {
-            const timeDiffInMilliseconds = (splits[index] - splits[index - 1]);
-            timeDiffAsString = displayMillisecondsInMinutesToCentiseconds(timeDiffInMilliseconds);
+            const timeCumulativeInMilliseconds = (splits[index] - splits[0]);
+            timeCumulativeAsString = displayMillisecondsInMinutesToCentiseconds(timeCumulativeInMilliseconds);
             if (bestSplits !== null && typeof bestSplits !== 'undefined') {
+              const timeSplitInMilliseconds = (splits[index] - splits[index - 1]);
               const timeDiffFromBestInMilliseconds = bestSplits[index] - bestSplits[index - 1];
-              const bestDiff = timeDiffInMilliseconds - timeDiffFromBestInMilliseconds;
+              const bestDiff = timeSplitInMilliseconds - timeDiffFromBestInMilliseconds;
               bestDiffAsString = displayMillisecondsInMinutesToCentiseconds(bestDiff);
             }
           }
@@ -85,7 +86,7 @@ export default function Splits({ startTime, stopTime, isRunning, squares, bestSp
           return <tr key={index}>
             <td>{index}</td>
             <td id="unit-time">{bestDiffAsString}</td>
-            <td id="unit-time">{timeDiffAsString}</td>
+            <td id="unit-time">{timeCumulativeAsString}</td>
           </tr>
         })}
       </tbody>
