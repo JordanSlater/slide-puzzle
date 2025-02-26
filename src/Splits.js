@@ -37,7 +37,7 @@ export default function Splits({ startTime, stopTime, isRunning, squares, bestSp
       }
       setPrevSplitIndex(currentSplitIndex);
       setPrevIsRunning(isRunning);
-      if (stopping) {
+      if (stopping && newSplits[newSplits.length - 1] !== null) {
         recordNewSplits(newSplits);
       }
 
@@ -76,7 +76,6 @@ export default function Splits({ startTime, stopTime, isRunning, squares, bestSp
             const timeDiffInMilliseconds = (splits[index] - splits[index - 1]);
             timeDiffAsString = displayMillisecondsInMinutesToCentiseconds(timeDiffInMilliseconds);
             if (bestSplits !== null && typeof bestSplits !== 'undefined') {
-              console.log(bestSplits);
               const timeDiffFromBestInMilliseconds = bestSplits[index] - bestSplits[index - 1];
               const bestDiff = timeDiffInMilliseconds - timeDiffFromBestInMilliseconds;
               bestDiffAsString = displayMillisecondsInMinutesToCentiseconds(bestDiff);

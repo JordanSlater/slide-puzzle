@@ -103,7 +103,6 @@ export default function Game() {
     }
     const bestTime = cookies.bestSplits[cookies.bestSplits.length - 1] - cookies.bestSplits[0];
     if (time < bestTime) {
-      console.log("set best splits in cookies");
       setCookie('bestSplits', newSplits);
     }
   }
@@ -115,6 +114,13 @@ export default function Game() {
 
   function stop() {
     setStopTime(Date.now());
+  }
+
+  function reset() {
+    setStopTime(null);
+    setStartTime(null);
+    setCurrentSquares(generateStartingSquares());
+    setMoves(0);
   }
 
   function handlePlay(swapPair) {
@@ -156,6 +162,7 @@ export default function Game() {
             <Board squares={currentSquares} onPlay={handlePlay} />
           </div>
         <div className="status">{status}</div>
+        <button className="reset" onClick={reset}>Reset</button>
         <Splits
           startTime={startTime}
           stopTime={stopTime}
